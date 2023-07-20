@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head_fragment(title = 'レジ管理システム', scripts = ~{::script}, links = ~{::link})"></head>
+<body>
+    <div class="container">
+        <h1>レジ管理システム</h1>
+        <div th:if="${registerlist}">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                    	<th>ID</th>
+                        <th>テーブル番号</th>
+                        <th>名称</th>
+                        <th>価格</th>
+				        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="register : ${registerlist}" th:object="${register}" class="align-middle">
+                        <td th:text="${register.id}"></td>
+                        <td th:text="${register.tableNumber}"></td>
+                        <td th:text="${register.foodName}"></td>
+                        <td th:text="${register.price}"></td>
+				        <td><a th:href="@{/register/{id}/pay(id=*{id})}" class="btn btn-success">会計</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+	<script>
+	var webscoket = null;
+	if('WebSocket' in window){
+		webscoket = new WebSocket('ws://localhost:8080/webSocket');
+    }else {
+    	alert('不支持webscoket!');	
+    }
+    
+    webscoket.onopen = function(event){
+    	console.log('connect中！');
+    }
+    
+    webscoket.onclose = function(event){
+    	console.log('close!');
+    }
+    
+    webscoket.onmessage = function(event){
+    	console.log('收到消息：!'+event.data);
+    }
+    
+    webscoket.onerror = function(){
+    	alert('error!');
+    }
+    
+    window.onbeforeunload = function(){
+    	websocket.close();
+    }
+    setInterval (function() {
+     window.location.reload();
+   	},3000);
+	</script>
+</body>
+</html>
